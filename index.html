@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+    <script src="js/mui.min.js"></script>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+    <link href="fonts/iconfont.css" rel="stylesheet"/>
+    <style>
+    	.mui-bar .mui-icon{
+    		color: #007aff;
+    	}
+    	.mui-bar .mui-title{
+    		font-size: 19px;
+    		font-weight: bold;
+    	}
+    	
+    	.mui-bar-tab .mui-tab-item{
+    		font-size: 12px;
+    	}
+    	.mui-tab-item .iconfont{
+    		position: relative;
+    		display: block;
+    	}
+    	.mui-badge-danger{
+    		position: absolute;
+    		top: -3px;
+    		right: 29px;
+    		transform: scale(.8);
+    		-webkit-transform: scale(.8);
+    	}
+    </style>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+	    <span class="mui-icon mui-icon-bars"></span>
+	    <h1 class="mui-title">首页</h1>
+	</header>
+	
+	<nav class="mui-bar mui-bar-tab">
+	    <a id="home" href="tmpl/home.html" class="mui-tab-item mui-active">
+	        <span class="iconfont">&#xe60c;</span>
+	        <span class="mui-tab-label">首页</span>
+	    </a>
+	    <a id="contact" href="tmpl/contact.html" class="mui-tab-item">
+	        <span class="iconfont">&#xe612;</span>
+	        <span class="mui-tab-label">通讯录</span>
+	    </a>
+	    <a id="friendly" href="tmpl/friendly.html" class="mui-tab-item">
+	        <span class="iconfont">
+	        	&#xe611;
+	        	<span class="mui-badge mui-badge-danger">1</span>
+	        </span>
+	        <span class="mui-tab-label">朋友圈</span>
+	    </a>
+	    <a id="userCenter" href="tmpl/userCenter.html" class="mui-tab-item">
+	        <span class="iconfont">&#xe610;</span>
+	        <span class="mui-tab-label">用户中心</span>
+	    </a>
+	</nav>
+	
+	<script type="text/javascript" charset="utf-8">
+      	mui.init({
+      		preloadPages:[
+      			{
+      				id:'login.html',
+      				url:'login.html'
+      			}
+      		]
+      	});
+      	var subPages=[
+      		'tmpl/home.html',
+      		'tmpl/contact.html',
+      		'tmpl/friendly.html',
+      		'tmpl/userCenter.html'
+      	];
+      	var styles={
+      		top:'45px',
+      		bottom:'51px'
+      	};
+      	var title=document.querySelector('.mui-title');
+      	var main;
+      	mui.plusReady(function(){
+//    		获取当前webview
+			main=plus.webview.currentWebview();
+//			点击右侧30%的遮罩层关闭菜单,mui在遮罩层上封装了maskClick事件
+			main.addEventListener('maskClick',closeMenu);
+      		for (var i=0;i<subPages.length;i++) {
+//    			创建子webview
+	      		var sub=plus.webview.create(subPages[i],subPages[i],styles);
+	      		if(i>0){
+	      			sub.hide();
+	      		}
+	      		main.append(sub);
+	      	}
+      	});
+      	var activeId=subPages[0];//默认显示
+//    	tab切换
+		mui('.mui-bar-tab').on('tap','a',function(){
+			title.innerHTML=this.querySelector('.mui-tab-label').innerHTML;
+			var targetId=this.getAttribute('href');
+			if (targetId=='tmpl/userCenter.html') {
+				if (!localStorage.stateLogin) {
+					mui.openWindow({
+						id:'login.html'
+					});
+				}
+			}
+			if (targetId==activeId) {//点击选项与激活选项一致时直接退出
+				return;
+			}
+			plus.webview.show(targetId,'slide-in-bottom',2000);
+			plus.webview.hide(activeId,'slide-out-top',2000);
+//			更改显示
+			activeId=targetId;
+		});
+//		侧滑菜单
+		var menu;
+		var showMenu;
+		mui.plusReady(function(){
+//			预加载侧滑菜单
+			menu=mui.preload({
+				id:'tmpl/menu.html',
+				url:'tmpl/menu.html',
+				styles:{
+					width:'70%',
+					zindex:'-1'//防止切换时白屏闪眼
+				}
+			});
+		});
+//		菜单图标绑定点击事件
+		mui('header').on('tap','.mui-icon-bars',openMenu);
+//		打开侧滑菜单
+		function openMenu(){
+			if(!showMenu){			
+				main.setStyle({
+					left:'70%',
+					mask:'rgba(0,0,0,.4)'
+				});
+				menu.show();
+				showMenu=true;
+			}
+		}
+//		关闭侧滑菜单
+		function closeMenu(){
+			if(showMenu){
+				main.setStyle({
+					left:0,
+					mask:'none'
+				});
+//				延迟隐藏
+				setTimeout(function(){
+					menu.hide();
+				},150);
+				showMenu=false;
+			}
+		}
+//		监听自定义事件
+		window.addEventListener('close-menu',closeMenu);
+//		监听goThisPage的自定义事件
+		window.addEventListener('goThisPage',function(e){
+			closeMenu();
+			var targetId=e.detail.id;
+			var target=document.querySelector('#'+targetId);
+			var active=document.querySelector('.mui-tab-item.mui-active');
+			if (target==active) {
+				return;
+			}
+			mui.trigger(target,'tap');
+			active.classList.remove('mui-active');
+			target.classList.add('mui-active');
+		});
+//		监听android的返回键
+		var first;
+		mui.back=function(){
+			if(showMenu){
+				closeMenu();
+			}else if(!first){
+				first=new Date().getTime();
+				mui.toast('再按一次退出应用');
+				setTimeout(function(){
+					first=null;
+				},1000);
+			}else if(new Date().getTime()-first<1000){
+				plus.runtime.quit();
+			}
+		};
+//		android菜单键绑定事件
+		mui.menu=function(){
+			if(showMenu){
+				closeMenu();
+			}else{
+				openMenu();
+			}
+		};
+    </script>
+</body>
+</html>

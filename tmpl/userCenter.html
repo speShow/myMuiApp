@@ -1,0 +1,193 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<style>
+			p{
+				text-align: center;
+			}
+			#head{
+				margin: 30px 0 20px 0;
+				width: 80px;
+				height: 80px;
+				border-radius: 50%;
+			}
+			#exit{
+				margin-left: 5%;
+				width: 90%;
+			}
+			.mui-fullscreen{
+				position: fixed;
+				background-color: #000;
+				z-index: 20;
+			}
+		</style>
+	</head>
+
+	<body>
+		<p><img class="mui-action-preview" id="head" src="" alt="" /></p>
+		<button id="exit" type="button" class="mui-btn mui-btn-blue mui-btn-block">注销</button>
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			mui('body').on('tap','#exit',function(){
+				mui.openWindow({
+					id:'login.html',
+					url:'../login.html'
+				});
+			});
+			mui('body').on('tap','#exit',function(){
+				localStorage.clear();
+			});
+			mui('body').on('tap','#head',function(e){
+				if (mui.os.plus) {//判断运行环境是否手机平台
+					var a=[
+						{title:'拍照'},
+						{title:'从手机相册选择'}
+					];
+					plus.nativeUI.actionSheet({
+						title:'修改头像',
+						cancel:'取消',
+						buttons:a
+					},function(b){
+						switch (b.index){
+							case 0:
+								break;
+							case 1:
+								getImage();
+								break;
+							case 2:
+								galleryImg();
+								break;
+							default:
+								break;
+						}
+					});
+				}
+			});
+//			摄像头
+			function getImage(){
+				var c=plus.camera.getCamera();
+				c.captureImage(function(e){
+					plus.io.resolveLocalFileSystemURL(e,function(entry){
+						var s=entry.toLocalURL()+"?version="+new Date().getTime();
+						document.getElementById('head').src=s;
+//						变更大图预览的src
+						document.querySelector('#__mui-imageview__group .mui-slider-item img').src=s+"?version="+new Date().getTime();;;
+					},function(e){
+						console.log(e.message);
+					});
+				},function(s){
+					console.log(s);
+				},{
+					filename:'_doc/head.jpg'
+				});
+			}
+//			相册
+			function galleryImg(){
+				plus.gallery.pick(function(a){
+					plus.io.resolveLocalFileSystemURL(a,function(entry){
+						plus.io.resolveLocalFileSystemURL('_doc/',function(root){
+							root.getFile('head.jpg',{},function(file){
+//								文件已存在
+								file.remove(function(){
+									entry.copyTo(root,'head.jpg',function(e){
+										var e=e.fullPath+'?version='+new Date().getTime();
+										document.getElementById("head").src=e;
+//										变更大图预览的src
+										document.querySelector('#__mui-imageview__group .mui-slider-item img').src=e+'?version='+new Date().getTime();;
+									},function(e){
+										console.log(e.message);
+									});
+								},function(){
+									console.log(e.message);
+								});
+							},function(){
+//								文件不存在
+								entry.copyTo(root,'head.jpg',function(e){
+									var path=e.fullPath+'?version='+new Date().getTime();
+									document.getElementById("head").src=path;
+//									变更大图预览的src
+									document.querySelector('#__mui-imageview__group .mui-slider-item img').src=path;
+								},function(e){
+									console.log(e.message);
+								});
+							});
+						},function(e){
+							console.log("get _www folder fail"+e.message);
+						});
+					},function(e){
+						console.log("读取拍照文件错误："+e.message);
+					});
+				},function(a){},{
+					filter:'image'
+				});
+			}
+//			默认显示选好的图片
+			function defaultImg(){
+				if (mui.os.plus) {
+					plus.io.resolveLocalFileSystemURL('_doc/head.jpg',function(entry){
+						var s=entry.fullPath+'?version='+new Date().getTime();;
+						document.getElementById("head").src=s;
+					},function(e){
+						document.getElementById("head").src='../images/logo.png';
+					});
+				}else{
+					document.getElementById("head").src='../images/logo.png';
+				}
+			}
+//			点击预览效果
+			function initImgPreview(){
+				var imgs=document.querySelectorAll('img.mui-action-preview');
+				imgs=mui.slice.call(imgs);
+				if (imgs&&imgs.length>0) {
+					var slider=document.createElement("div");
+					slider.setAttribute('id','__mui-imageview__');
+					slider.classList.add('mui-slider');
+					slider.classList.add('mui-fullscreen');
+					slider.style.display='none';
+					slider.addEventListener('tap',function(){
+						slider.style.display='none';
+					});
+					slider.addEventListener('touchmove',function(event){
+						event.preventDefault();
+					});
+					var slider_group=document.createElement("div");
+					slider_group.setAttribute('id','__mui-imageview__group');
+					slider_group.classList.add('mui-slider-group');
+					imgs.forEach(function(value,index,array){
+//						图片添加点击事件,触发预览显示
+						value.addEventListener('tap',function(){
+							slider.style.display='block';
+							_slider.refresh();
+							_slider.gotoItem(index,0);
+						});
+						var item=document.createElement("div");
+						item.classList.add('mui-slider-item');
+						var a=document.createElement("a");
+						var img=document.createElement("img");
+						img.setAttribute('src',value.src);
+						a.appendChild(img);
+						item.appendChild(a);
+						slider_group.appendChild(item);
+					});
+					slider.appendChild(slider_group);
+					document.body.appendChild(slider);
+					var _slider=mui(slider).slider();
+				}
+			}
+//			功能初始化
+			setTimeout(function(){
+				defaultImg();
+				setTimeout(function(){
+					initImgPreview();
+				},300);
+			},500);
+		</script>
+	</body>
+
+</html>

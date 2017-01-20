@@ -1,0 +1,165 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<style>
+	    	.mui-slider-indicator .mui-indicator{
+	    		width: 34px;
+	    		height: 3px;
+	    		border-radius: 0;
+	    		background: #d9dadc;
+	    		box-shadow: none;
+	    		-webkit-box-shadow: none;
+	    	}
+	    	.mui-slider-indicator .mui-active.mui-indicator{
+	    		background: #007aff;
+	    	}
+	    	.mui-table-view .mui-media-object{
+	    		max-width: 90px;
+	    		flex: 0 0 90px;/*flex: 是否缩放 分配比例 指定宽度*/
+	    		height: auto;
+	    	}
+	    	.mui-table-view-cell>a:not(.mui-btn){
+	    		display: flex;
+	    		display: -webkit-flex;
+	    		align-items: center;
+	    		-webkit-align-items: center;
+	    	}
+	    	.mui-table-view .mui-media,.mui-table-view .mui-media-body{
+	    		padding-right: 18px;
+	    	}
+	    	.time{
+	    		position: absolute;
+	    		top: 10px;
+	    		right: 15px;
+	    		font-size: 12px;
+	    	}
+		</style>
+	</head>
+	<body>
+		<div id="refreshContainer" class="mui-content mui-scroll-wrapper">
+		    <div class="mui-scroll">
+		        <div id="slider" class="mui-slider" >
+		          <div class="mui-slider-group mui-slider-loop">
+		            <!-- 额外增加的一个节点(循环轮播：第一个节点是最后一张轮播) -->
+		            <div class="mui-slider-item mui-slider-item-duplicate">
+		              <a href="#">
+		                <img src="../images/4.jpg">
+		              </a>
+		            </div>
+		            <!-- 第一张 -->
+		            <div class="mui-slider-item">
+		              <a href="#">
+		                <img src="../images/1.jpg">
+		              </a>
+		            </div>
+		            <!-- 第二张 -->
+		            <div class="mui-slider-item">
+		              <a href="#">
+		                <img src="../images/2.jpg">
+		              </a>
+		            </div>
+		            <!-- 第三张 -->
+		            <div class="mui-slider-item">
+		              <a href="#">
+		                <img src="../images/3.jpg">
+		              </a>
+		            </div>
+		            <!-- 第四张 -->
+		            <div class="mui-slider-item">
+		              <a href="#">
+		                <img src="../images/4.jpg">
+		              </a>
+		            </div>
+		            <!-- 额外增加的一个节点(循环轮播：最后一个节点是第一张轮播) -->
+		            <div class="mui-slider-item mui-slider-item-duplicate">
+		              <a href="#">
+		                <img src="../images/1.jpg">
+		              </a>
+		            </div>
+		          </div>
+		          <div class="mui-slider-indicator">
+		            <div class="mui-indicator mui-active"></div>
+		            <div class="mui-indicator"></div>
+		            <div class="mui-indicator"></div>
+		            <div class="mui-indicator"></div>
+		          </div>
+		        </div>
+		        <ul id="dataListBox" class="mui-table-view">
+		            
+		        </ul>
+		    </div>
+		</div>
+		
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript">
+			mui.init({
+				preloadPages:[
+					{
+						id:'detail.html',
+						url:'../detail.html'
+					}
+				],
+				pullRefresh:{
+					container:'#refreshContainer',
+					down:{
+						callback:pullDownRefresh//下拉刷新调用
+					},
+					up:{
+						callback:pullUpRefresh,//上拉刷新调用
+						auto:true
+					}
+				}
+			});
+//			下拉刷新
+			var currWebv;
+			function pullDownRefresh(){
+				currWebv=plus.webview.currentWebview();
+				currWebv.reload();//页面刷新
+//				关闭加载转圈
+				mui('#refreshContainer').pullRefresh().endPulldownToRefresh();
+			}
+			var dataListBox=document.querySelector('#dataListBox');
+//			上拉刷新
+			function pullUpRefresh(){
+				currWebv=plus.webview.currentWebview();
+//				页面加载获取产品列表数据
+				mui.get('../data/dataList.json',{},function(data){
+					for (var i=0;i<data.length;i++) {
+						var li=document.createElement("li");
+						li.className='mui-table-view-cell mui-media';
+						li.innerHTML='<a data-id='+data[i].dataId+' href="javascript:;" class="mui-navigate-right">\
+						            <img class="mui-media-object mui-pull-left" src="../images/'+data[i].img+'">\
+						            <div class="mui-media-body">\
+						            '+data[i].title+'\
+						            <p class="mui-ellipsis-2">'+data[i].info+'</p>\
+						            </div>\
+						            <p class="time">'+data[i].time+'</p>\
+						        	</a>';
+						dataListBox.appendChild(li);
+					}
+				},'json');
+				mui('#refreshContainer').pullRefresh().endPullupToRefresh();
+			}
+//			点击列表跳转详情页
+			var detail;
+			mui('#dataListBox').on('tap','a',function(){
+//				获取当前a的数据id
+				var dataId=this.getAttribute('data-id');
+				mui.openWindow({
+					id:'detail.html',
+				});
+				detail=plus.webview.getWebviewById('detail.html');
+//				预加载页面无法通用extras传值,只能通过自定义事件传值
+//				触发自定义事件,detail.html监听这个自定义事件
+				mui.fire(detail,'getDataId',{
+					id:dataId
+				});
+			});
+		</script>
+	</body>
+
+</html>

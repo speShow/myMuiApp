@@ -1,0 +1,31 @@
+{
+  "tmpl/friendly.html": {
+    "href": "tmpl/friendly.html",
+    "resources": [
+      "fonts/iconfont.eot",
+      "fonts/iconfont.ttf",
+      "fonts/iconfont.svg"
+    ],
+    "priority": 1
+  },
+  "tmpl/userCenter.html": {
+    "href": "tmpl/userCenter.html",
+    "resources": [
+      "fonts/mui.ttf"
+    ],
+    "refer": [
+      "login.html"
+    ],
+    "priority": 4
+  },
+  "index.html": {
+    "href": "index.html",
+    "resources": [
+      "fonts/iconfont.eot",
+      "fonts/iconfont.ttf",
+      "fonts/iconfont.svg"
+    ],
+    "refer": [],
+    "priority": 0
+  }
+}

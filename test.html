@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<script type="text/javascript">
+//			var c = "c" ; 
+			var a = {
+				"dataId":"01",
+				"img":"../images/1.jpg",
+				"title":"幸福",
+				"info":"能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？",
+				1 : "1",
+				"2" : "2",
+				"c" : 3
+			}
+			for(var i in a){
+				console.log(a[2]) 
+				console.log(a['dataId']) 
+				console.log(a.img) //  
+				console.log(a.dataId) 
+				console.log(a[1])  // 数字必须中括号 ， 引号无所谓， 不可用用·来访问
+				console.log(a[2])  // 数字必须中括号 ， 引号无所谓， 不可用用·来访问
+				console.log(a["c"])  // 中括号内的c必须要 定义，声明
+			}
+			
+			var obj = {
+				aaa : function(){
+					console.log(1);
+					return 111111111111111111111111
+				},
+				ba : 2222222222222222222
+			}
+			console.log(obj.aaa())
+			console.log(obj.ba)
+		</script>
+	</body>
+</html>

@@ -1,0 +1,131 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link href="../css/mui.indexedlist.css" rel="stylesheet" />
+		<style>
+			html,
+			body {
+				height: 100%;
+				overflow: hidden;
+			}
+			.mui-bar {
+				-webkit-box-shadow: none;
+				box-shadow: none;
+			}
+			.mui-table-view-cell>a:not(.mui-btn){
+				position: relative;
+				align-items: center;
+				display: flex;
+			}
+			.mui-table-view .mui-media-object{
+				max-width: 64px;
+				height: 64px;
+				border-radius: 50%;
+			}
+			.alisa{
+				position: absolute;
+				top: 20px;
+				left: 170px;
+				font-size: 12px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content">
+			<!--索引列表-->
+			<div id='list' class="mui-indexed-list">
+				<!--搜索框-->
+				<div class="mui-indexed-list-search mui-input-row mui-search">
+					<input type="search" class="mui-input-clear mui-indexed-list-search-input" placeholder="搜索">
+				</div>
+				<!--右侧字母导航索引-->
+				<div class="mui-indexed-list-bar">
+					<a>A</a>
+					<a>B</a>
+					<a>C</a>
+					<a>D</a>
+					<a>E</a>
+					<a>F</a>
+					<a>G</a>
+					<a>H</a>
+					<a>I</a>
+					<a>J</a>
+					<a>K</a>
+					<a>L</a>
+					<a>M</a>
+					<a>N</a>
+					<a>O</a>
+					<a>P</a>
+					<a>Q</a>
+					<a>R</a>
+					<a>S</a>
+					<a>T</a>
+					<a>U</a>
+					<a>V</a>
+					<a>W</a>
+					<a>X</a>
+					<a>Y</a>
+					<a>Z</a>
+				</div>
+				<!--点击字母，提示的弹框-->
+				<div class="mui-indexed-list-alert"></div>
+				<div class="mui-indexed-list-inner">
+					<!--找不到提示-->
+					<div class="mui-indexed-list-empty-alert">没有数据</div>
+					<ul id="dataListBox" class="mui-table-view">
+						
+					</ul>
+				</div>
+			</div>
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/mui.indexedlist.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			var dataListBox=document.querySelector('#dataListBox');
+//			向服务器端获取数据
+			mui.get('../data/contact.json',{},function(data){
+//				数据排序
+//				data.sort(function(a,b){return a.type>b.type?1:a.type<b.type?-1:0});
+				var result=[];
+//				将数据填充到页面
+				for (var i=0;i<data.length;i++) {
+//					判断当前是否存在该组,并创建组
+					if (result.indexOf(data[i].type)==-1) {
+//						创建组
+						var liGroup=document.createElement("li");
+						liGroup.className='mui-table-view-divider mui-indexed-list-group';
+						liGroup.setAttribute('data-group',data[i].type);
+						liGroup.innerHTML=data[i].type;
+						dataListBox.appendChild(liGroup);
+						result.push(data[i].type);
+					}
+//					创建组员
+					var li=document.createElement("li");
+					li.className='mui-table-view-cell mui-indexed-list-item mui-media';
+					li.innerHTML='<a href="#">\
+						          	<img class="mui-media-object mui-pull-left" src="'+data[i].imgURL+'">\
+						          	<div class="mui-media-body">\
+					              		'+data[i].name+'\
+					              		<p class="mui-ellipsis">'+data[i].email+'</p>\
+					              		<p class="alisa">'+data[i].alisa+'</p>\
+					           	  	</div>\
+						          </a>';
+					dataListBox.appendChild(li);
+				}
+				var list = document.getElementById('list');
+				//calc hieght
+				list.style.height = document.body.offsetHeight + 'px';
+				//create
+				window.indexedList = new mui.IndexedList(list);
+			},'json');
+		</script>
+	</body>
+
+</html>

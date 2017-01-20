@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<style>
+			.mui-input-group{
+				margin: 20px 0 10px 0;
+			}
+			.btn-parent{
+				padding: 0 15px;
+			}
+			#login{
+				width: 100%;
+			}
+			#register{
+				margin-top: 20px;
+				margin-right: 15px;
+				float: right;
+				font-size: 12px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		    <h1 class="mui-title">登录</h1>
+		</header>
+		<div class="mui-content">
+		   <form class="mui-input-group">
+			   	<div class="mui-input-row">
+			   	    <label>用户名</label>
+			   	    <input type="text" class="mui-input-clear" placeholder="请输入用户名">
+			   	</div>
+			    <div class="mui-input-row">
+			        <label>密码</label>
+			        <input type="password" class="mui-input-password" placeholder="请输入密码">
+			    </div>
+		   </form>
+		   <div class="btn-parent"><button id="login" type="button" class="mui-btn mui-btn-primary">登录</button></div>
+		   <a id="register" href="#" class="mui-btn mui-btn-blue mui-btn-outlined">还没有账号？点击注册</a>
+		</div>
+	
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			var curr;
+			mui('body').on('tap','#login',function(){
+				var reg=/^[\w-]{6,8}$/;
+				mui('.mui-input-group input').each(function(){
+					var labelText=this.previousElementSibling.innerHTML;
+					if(!this.value||!this.value.trim()){
+						mui.toast(labelText+"不能为空");
+						check=false;
+						return false;
+					}else if(!reg.test(this.value)){
+						mui.toast(labelText+"格式错误");
+						check=false;
+						return false;
+					}
+				});
+				if (check) {
+//					ajax
+//					显示用户中心界面 -- 隐藏当前webview
+					curr=plus.webview.currentWebview();
+					curr.hide();
+					localStorage.stateLogin=true;
+				}
+			});
+		</script>
+	</body>
+
+</html>

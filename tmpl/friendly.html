@@ -1,0 +1,126 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link href="../fonts/iconfont.css" rel="stylesheet"/>
+		<style>
+			.mui-card-header.mui-card-media {
+			    display: flex;
+			    justify-content: flex-start;
+			    height: 70px;
+			}
+			.mui-card-header.mui-card-media .mui-media-body {
+			    margin-left: 10px;
+			}
+			.mui-card-header>img:first-child {
+				flex: 0 0 50px;
+			    width: 50px;
+			    height: 50px;
+			    border-radius: 50%;
+			}
+			.mui-btn-blue,.mui-btn-primary{
+				padding: 6px 10px;
+				font-size: 12px;
+				border: 1px solid transparent;
+			}
+			.mui-card-footer{
+				display: flex;
+				justify-content: space-between;
+			}
+			.timer{
+				position: relative;
+				top: 6px;
+				font-size: 12px;
+			}
+			p{
+				font-size: 12px;
+			}
+			i.iconfont{
+				font-size: 14px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<!--下拉刷新容器-->
+		<div id="refreshContainer" class="mui-content mui-scroll-wrapper">
+		  <div id="dataListBox" class="mui-scroll">
+		    <!--数据列表-->
+		  </div>
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript">
+			mui.init({
+				pullRefresh:{
+					container:'#refreshContainer',
+					down:{
+						callback:pullDownRefresh//下拉刷新调用
+					},
+					up:{
+						callback:pullUpRefresh,//上拉刷新调用
+						auto:true
+					}
+				}
+			});
+//			下拉刷新
+			var currWebv;
+			function pullDownRefresh(){
+				currWebv=plus.webview.currentWebview();
+				currWebv.reload();//页面刷新
+//				关闭加载转圈
+				mui('#refreshContainer').pullRefresh().endPulldownToRefresh();
+			}
+			var dataListBox=document.querySelector('#dataListBox');
+//			上拉刷新
+			function pullUpRefresh(){
+				currWebv=plus.webview.currentWebview();
+//				页面加载获取产品列表数据
+				mui.get('../data/friendly.json',{},function(data){
+					for (var i=0;i<data.length;i++) {
+						var div=document.createElement("div");
+						div.className='mui-card';
+						div.innerHTML='<div class="mui-card-header mui-card-media">\
+											<img src="../images/'+data[i].smallPic+'" />\
+											<div class="mui-media-body">\
+												'+data[i].name+'\
+												<p>'+data[i].sendTime+'</p>\
+											</div>\
+										</div>\
+										<div class="mui-card-content" >\
+											<img src="../images/'+data[i].bigPic+'" alt="" width="100%"/>\
+											<p class="mui-content-padded">\
+												'+data[i].info+'\
+											</p>\
+										</div>\
+										<div class="mui-card-footer">\
+											<div>\
+												<button type="button" class="mui-btn mui-btn-blue mui-btn-outlined good">\
+													<i class="iconfont">&#xe60f;</i>\
+													<span>'+data[i].goodCount+'</span> 赞\
+												</button>\
+												<button type="button" class="mui-btn mui-btn-blue mui-btn-outlined">\
+													<i class="iconfont">&#xe60e;</i>\
+													<span>'+data[i].discussCount+'</span>\
+												</button>\
+											</div>\
+											<p class="timer">'+data[i].timer+'</p>\
+										</div>';
+						dataListBox.appendChild(div);
+					}
+				},'json');
+				mui('#refreshContainer').pullRefresh().endPullupToRefresh();
+			}
+//			点赞
+			mui('#dataListBox').on('tap','.good',function(){
+				var span=this.querySelector('span');
+				var count=parseInt(span.innerHTML);
+				span.innerHTML=++count;
+			});
+		</script>
+	</body>
+
+</html>

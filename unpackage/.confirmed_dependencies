@@ -1,0 +1,138 @@
+{
+  "index.html": {
+    "resources": [
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "images/2.jpg",
+      "images/1.jpg",
+      "images/3.jpg",
+      "images/4.jpg",
+      "fonts/iconfont.css",
+      "list.html",
+      "fonts/iconfont.woff",
+      "tmpl/home.html"
+    ],
+    "refer": [
+      "list.html",
+      "tmpl/contact.html",
+      "tmpl/userCenter.html",
+      "tmpl/friendly.html",
+      "tmpl/menu.html",
+      "tmpl/home.html",
+      "login.html"
+    ]
+  },
+  "detail.html": {
+    "resources": [
+      "data/data01.json",
+      "data/data02.json",
+      "data/data03.json",
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "data/data04.json",
+      "data/data05.json",
+      "js/mui.zoom.js",
+      "js/mui.previewimage.js"
+    ],
+    "refer": []
+  },
+  "list.html": {
+    "resources": [
+      "images/2.jpg",
+      "images/5.jpg",
+      "data/dataList.json",
+      "images/1.jpg",
+      "images/3.jpg",
+      "images/4.jpg",
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css"
+    ],
+    "refer": [
+      "detail.html"
+    ]
+  },
+  "tmpl/home.html": {
+    "resources": [
+      "js/mui.min.js",
+      "data/dataList.json",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "images/2.jpg",
+      "images/1.jpg",
+      "images/3.jpg",
+      "images/4.jpg",
+      "images/5.jpg"
+    ],
+    "refer": [
+      "detail.html"
+    ]
+  },
+  "tmpl/menu.html": {
+    "resources": [
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css"
+    ],
+    "refer": []
+  },
+  "tmpl/contact.html": {
+    "resources": [
+      "css/mui.min.css",
+      "data/contact.json",
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "js/mui.indexedlist.js",
+      "css/mui.indexedlist.css",
+      "images/con-1.jpg",
+      "images/6.jpg",
+      "images/con-3.jpg",
+      "images/con-4.jpg",
+      "images/con-2.jpg"
+    ],
+    "refer": []
+  },
+  "tmpl/friendly.html": {
+    "resources": [
+      "images/logo.png",
+      "js/mui.min.js",
+      "css/mui.min.css",
+      "images/1.png",
+      "images/con-1.jpg",
+      "fonts/mui.ttf",
+      "fonts/iconfont.css",
+      "images/con-3.jpg",
+      "images/con-4.jpg",
+      "images/con-5.jpg",
+      "fonts/iconfont.woff",
+      "images/5.png",
+      "images/2.png",
+      "images/3.png",
+      "data/friendly.json",
+      "images/4.png",
+      "images/con-2.jpg"
+    ],
+    "refer": []
+  },
+  "tmpl/userCenter.html": {
+    "resources": [
+      "js/mui.min.js",
+      "css/mui.min.css",
+      "images/con-5.jpg",
+      "images/logo.png"
+    ],
+    "refer": [
+      "login.html"
+    ]
+  },
+  "login.html": {
+    "resources": [
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css"
+    ],
+    "refer": []
+  }
+}

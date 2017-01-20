@@ -1,0 +1,96 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<style>
+			html,
+			body {
+				background-color: #343434;
+			}
+			p {
+				margin: 10px 15px;
+				text-indent: 22px;
+			}
+			.mui-content{
+				background-color: #343434;;
+			}
+			.title {
+				margin: 35px 15px 10px;
+				color: #f1f1f1;
+			}
+			.title+.content {
+				margin: 10px 15px 35px;
+				color: #bbb;
+				text-indent: 1em;
+				font-size: 14px;
+				line-height: 24px;
+			}
+			button {
+				padding: 5px 20px;
+			}
+			.mui-table-view{
+				background-color: #343434;
+			}
+			.mui-table-view:before,.mui-table-view:after,.mui-table-view-cell:after{
+				background-color: #292929;
+			}
+			.mui-table-view-cell>a:not(.mui-btn){
+				color: #f1f1f1;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content">
+		    <div class="title">侧滑导航</div>
+		    <div class="content">
+		    	这是webview模式下的侧滑导航示例，你可以在这里放置任何内容；关闭侧滑菜单有多种方式： 1.点击本侧滑菜单页之外的任意位置; 2.点击如下红色按钮；左滑屏幕等
+		    	<p>
+		    		<button type="button" id="closeBtn" class="mui-btn mui-btn-danger mui-btn-block">关闭侧滑菜单</button>
+		    	</p>
+		    </div>
+		    <ul class="mui-table-view">
+		            <li class="mui-table-view-cell">
+		                <a id="home" class="mui-navigate-right">
+		                    	首页
+		                </a>
+		            </li>
+		            <li class="mui-table-view-cell">
+		                <a id="contact" class="mui-navigate-right">
+		                     	通讯录
+		                </a>
+		            </li>
+		            <li class="mui-table-view-cell">
+		                <a id="friendly" class="mui-navigate-right">
+		                     	朋友圈
+		                </a>
+		            </li>
+		            <li class="mui-table-view-cell">
+		                <a id="userCenter" class="mui-navigate-right">
+		                     	用户中心
+		                </a>
+		            </li>
+		        </ul>
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			var main;
+			mui.plusReady(function(){
+				main=plus.webview.currentWebview().opener();
+			});
+			mui('body').on('tap','#closeBtn',function(){
+				mui.fire(main,'close-menu');
+			});
+//			点击列表导航
+			mui('.mui-table-view').on('tap','a',function(){
+				mui.fire(main,'goThisPage',{id:this.getAttribute('id')});
+			});
+		</script>
+	</body>
+
+</html>
